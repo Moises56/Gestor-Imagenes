@@ -4,6 +4,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Body,
+  Get,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -28,10 +29,18 @@ export class ImagesController {
     }),
   )
   async uploadFile(
-    @UploadedFile() file: Express.Multer.File, // Aquí está el tipo problemático
+    @UploadedFile() file: Express.Multer.File,
     @Body() createImageDto: CreateImageDto,
   ) {
+    if (!file) {
+      throw new Error('No file uploaded');
+    }
     const url = await this.imagesService.saveImage(file, createImageDto);
     return { url };
+  }
+
+  @Get()
+  async getAllImages(): Promise<CreateImageDto[]> {
+    return this.imagesService.getAllImages();
   }
 }
