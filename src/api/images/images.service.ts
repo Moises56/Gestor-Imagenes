@@ -13,7 +13,8 @@ export class ImagesService {
   async saveImage(file: Express.Multer.File, createImageDto: CreateImageDto) {
     if (!file || !file.filename) throw new Error('File or filename is missing');
 
-    const url = `http://localhost:3000/uploads/${file.filename}`;
+    const baseUrl = process.env.BASE_URL || 'https://gestorimg.amdc.hn';
+    const url = `${baseUrl}/uploads/${file.filename}`;
     const image = await this.prisma.image.create({
       data: {
         name: createImageDto.name,
